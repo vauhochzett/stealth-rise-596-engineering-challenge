@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import Annotated
+from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, PositiveInt
 
@@ -21,12 +22,21 @@ class Order(BaseModel):
     """Total Price: Total price for this line (Unit Price x Amount). Example: 1000"""
 
 
+class RequestStatus(str):
+    OPEN = "Open"
+    IN_PROGRESS = "In Progress"
+    CLOSED = "Closed"
+
+
 class ProcurementRequest(BaseModel):
+    id: UUID = Field(default_factory=uuid4)
+    """Unique identifier for the procurement request"""
+
     requestor: str
     """Full name of the person submitting the request. Example: John Doe"""
 
     department: str
-    """The Deparment of the Requestor"""
+    """The Department of the Requestor"""
 
     title: str
     """Brief name or description of the product/service requested. Example: Adobe Creative Cloud Subscription"""
@@ -45,3 +55,6 @@ class ProcurementRequest(BaseModel):
 
     total: Decimal
     """Estimated total cost of the request. Example: 3000"""
+
+    status: RequestStatus = RequestStatus.OPEN
+    """Status of the procurement request. Can be Open, In Progress, or Closed."""
