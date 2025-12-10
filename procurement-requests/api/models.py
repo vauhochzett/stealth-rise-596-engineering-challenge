@@ -1,4 +1,5 @@
 from decimal import Decimal
+from enum import Enum
 from typing import Annotated
 from uuid import UUID, uuid4
 
@@ -22,7 +23,7 @@ class Order(BaseModel):
     """Total Price: Total price for this line (Unit Price x Amount). Example: 1000"""
 
 
-class RequestStatus(str):
+class RequestStatus(str, Enum):
     OPEN = "Open"
     IN_PROGRESS = "In Progress"
     CLOSED = "Closed"

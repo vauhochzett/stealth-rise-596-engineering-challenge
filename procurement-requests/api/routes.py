@@ -16,7 +16,7 @@ frontend_dist_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "
 if os.path.exists(frontend_dist_path):
     # Mount the static files for the React app
     router.mount(
-        "/", StaticFiles(directory=frontend_dist_path, html=True), name="frontend"
+        "/app", StaticFiles(directory=frontend_dist_path, html=True), name="frontend"
     )
 
 
