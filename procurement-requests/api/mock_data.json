@@ -5,7 +5,7 @@
     "title": "Office 365",
     "vendor": "Microsoft",
     "vat_id": "DE12345",
-    "commodity_group": "Software",
+    "commodity_group": "Software-as-a-service",
     "orders": [
       {
         "title": "Office 365",
@@ -24,7 +24,7 @@
     "title": "Adobe Creative Cloud",
     "vendor": "Adobe Systems",
     "vat_id": "DE98765",
-    "commodity_group": "Software Licenses",
+    "commodity_group": "Software-as-a-service",
     "orders": [
       {
         "title": "Adobe Photoshop License",
@@ -50,7 +50,7 @@
     "title": "Server Hardware",
     "vendor": "Dell Technologies",
     "vat_id": "DE54321",
-    "commodity_group": "Hardware",
+    "commodity_group": "Computing Hardware",
     "orders": [
       {
         "title": "Dell PowerEdge Servers",
@@ -76,7 +76,7 @@
     "title": "Recruitment Platform Subscription",
     "vendor": "LinkedIn Corporation",
     "vat_id": "DE11223",
-    "commodity_group": "Services",
+    "commodity_group": "Software-as-a-service",
     "orders": [
       {
         "title": "LinkedIn Recruiter Licenses",
