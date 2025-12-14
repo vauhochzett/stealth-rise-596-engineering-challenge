@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import os
 from typing import Any
 
@@ -43,6 +44,7 @@ def _upload_pdf(client: OpenAI, pdf_bytes: bytes, filename: str) -> str:
         )
         return file.id
     except APIError as exc:
+        logging.error(f"OpenAI API error: {exc}")
         raise HTTPException(status_code=502, detail="OpenAI upload failed") from exc
 
 
@@ -60,6 +62,7 @@ def _parse_openai_json(content: str) -> ProcurementRequest:
     try:
         request = ProcurementRequest.model_validate(payload)
     except ValidationError as exc:
+        logging.error(f"Validation error: {exc}")
         raise HTTPException(
             status_code=422,
             detail=f"Extracted data failed validation: {exc.errors()}",
@@ -97,6 +100,7 @@ def _extract_from_pdf(pdf_bytes: bytes, filename: str) -> ProcurementRequest:
         )
         content = response.choices[0].message.content
     except APIError as exc:
+        logging.error(f"OpenAI API error: {exc}")
         raise HTTPException(status_code=502, detail="OpenAI extraction failed") from exc
 
     return _parse_openai_json(content)
