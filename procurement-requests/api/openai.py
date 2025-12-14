@@ -91,7 +91,7 @@ def _extract_from_pdf(pdf_bytes: bytes, filename: str) -> ProcurementRequest:
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5.1",
             messages=_build_messages(file_id),
             response_format={"type": "json_object"},
         )
