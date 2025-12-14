@@ -125,6 +125,11 @@ const RequestFormPage = () => {
               We will extract vendor, VAT ID, department and order lines for
               you.
             </div>
+            {isExtracting && (
+              <div className="mt-2">
+                <Loading label="Extracting offer..." />
+              </div>
+            )}
           </div>
 
           <div className="row g-3">
