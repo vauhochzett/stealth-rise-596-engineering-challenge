@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import type { ProcurementRequest, RequestStatus } from '../api/client'
 import { api } from '../api/client'
 import Loading from '../components/Loading'
@@ -52,9 +51,6 @@ const RequestListPage = () => {
           <i className="bi bi-clipboard-check text-primary fs-4" />
           <h2 className="mb-0">Requests overview</h2>
         </div>
-        <Link to="/requests/new" className="btn btn-primary">
-          + New Request
-        </Link>
       </div>
       <p className="text-muted">
         Track incoming procurement requests and keep status up to date.
