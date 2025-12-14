@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ProcurementRequest, RequestStatus } from '../api/client'
 import { api } from '../api/client'
 import Loading from '../components/Loading'
+import RequestDetails from '../components/RequestDetails'
 import StatusBadge from '../components/StatusBadge'
 
 const statusOptions: RequestStatus[] = ['Open', 'In Progress', 'Closed']
@@ -11,6 +12,7 @@ const RequestListPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [selected, setSelected] = useState<ProcurementRequest | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -63,12 +65,13 @@ const RequestListPage = () => {
           No requests yet. Create the first one.
         </div>
       ) : (
-        <div className="card shadow-sm border-0">
-          <div className="table-responsive">
-            <table className="table align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>ID</th>
+        <>
+          <div className="card shadow-sm border-0">
+            <div className="table-responsive">
+              <table className="table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
                   <th>Title</th>
                   <th>Vendor</th>
                   <th>Dept.</th>
@@ -79,7 +82,12 @@ const RequestListPage = () => {
               </thead>
               <tbody>
                 {requests.map((req) => (
-                  <tr key={req.id}>
+                  <tr
+                    key={req.id}
+                    role="button"
+                    onClick={() => setSelected(req)}
+                    className={selected?.id === req.id ? 'table-active' : ''}
+                  >
                     <td className="text-nowrap fw-semibold">{req.id}</td>
                     <td>{req.title}</td>
                     <td>
@@ -114,11 +122,12 @@ const RequestListPage = () => {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+          {selected && <RequestDetails request={selected} />}
+        </>
       )}
     </div>
   )
 }
 
 export default RequestListPage
-
