@@ -40,7 +40,7 @@ client: OpenAI = OpenAI()
 def _upload_pdf(client: OpenAI, pdf_bytes: bytes, filename: str) -> str:
     try:
         file = client.files.create(
-            file=(filename, pdf_bytes, "application/pdf"), purpose="vision"
+            file=(filename, pdf_bytes, "application/pdf"), purpose="user_data"
         )
         return file.id
     except APIError as exc:
