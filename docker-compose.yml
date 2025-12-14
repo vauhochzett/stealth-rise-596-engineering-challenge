@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: ./procurement-requests
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      REQUESTS_FILE_PATH: /data/requests_data.json
+    ports:
+      - "8000:8000"
+    volumes:
+      - api_data:/data
+
+  app:
+    build:
+      context: ./procurement-app
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+
+volumes:
+  api_data:
