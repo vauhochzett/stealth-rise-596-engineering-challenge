@@ -1,8 +1,6 @@
-import os
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import api.data
@@ -10,14 +8,6 @@ from api.models import ProcurementRequest, RequestStatus
 
 templates = Jinja2Templates(directory="html")
 router = APIRouter()
-
-# Serve React app static files
-frontend_dist_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
-if os.path.exists(frontend_dist_path):
-    # Mount the static files for the React app
-    router.mount(
-        "/app", StaticFiles(directory=frontend_dist_path, html=True), name="frontend"
-    )
 
 
 @router.get("/")
