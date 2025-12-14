@@ -29,6 +29,10 @@ class RequestStatus(str, Enum):
     CLOSED = "Closed"
 
 
+class StatusUpdate(BaseModel):
+    status: RequestStatus
+
+
 class ProcurementRequest(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     """Unique identifier for the procurement request"""

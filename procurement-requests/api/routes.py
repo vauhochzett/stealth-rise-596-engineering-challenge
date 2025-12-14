@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.templating import Jinja2Templates
 
 import api.data
-from api.models import ProcurementRequest, RequestStatus
+from api.models import ProcurementRequest, StatusUpdate
 
 templates = Jinja2Templates(directory="html")
 router = APIRouter()
@@ -39,11 +39,11 @@ async def add_request(request: ProcurementRequest):
 
 
 @router.put("/request/{request_id}/status")
-async def update_request_status(request_id: UUID, status: RequestStatus):
-    success: bool = api.data.update_request_status(request_id, status)
+async def update_request_status(request_id: UUID, update: StatusUpdate):
+    success: bool = api.data.update_request_status(request_id, update.status)
     if not success:
         raise HTTPException(
             status_code=404, detail="Request not found or could not be updated"
         )
 
-    return {"message": f"Request status updated to {status}"}
+    return {"message": f"Request status updated to {update.status}"}

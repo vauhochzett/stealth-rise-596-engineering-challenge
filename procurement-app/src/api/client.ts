@@ -47,8 +47,8 @@ export const api = {
     id: string,
     status: RequestStatus,
   ): Promise<ProcurementRequest> {
-    const { data } = await http.patch<ProcurementRequest>(
-      `/requests/${id}/status`,
+    const { data } = await http.put<ProcurementRequest>(
+      `/request/${id}/status`,
       { status },
     )
     return data

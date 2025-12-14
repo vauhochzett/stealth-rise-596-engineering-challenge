@@ -3,7 +3,7 @@ import os
 from typing import List, Optional
 from uuid import UUID
 
-from api.models import Order, ProcurementRequest
+from api.models import Order, ProcurementRequest, RequestStatus
 
 
 def load_mock_requests() -> List[ProcurementRequest]:
@@ -63,7 +63,7 @@ def add_request(request: ProcurementRequest) -> bool:
         return False
 
 
-def update_request_status(request_id: UUID, status: str) -> bool:
+def update_request_status(request_id: UUID, status: RequestStatus) -> bool:
     """Update the status of a procurement request."""
     try:
         for request in _requests:
