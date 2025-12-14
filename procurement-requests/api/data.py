@@ -31,6 +31,7 @@ def load_mock_requests() -> List[ProcurementRequest]:
             commodity_group=item["commodity_group"],
             orders=orders,
             total=item["total"],
+            status=item["status"],
         )
         requests.append(request)
 

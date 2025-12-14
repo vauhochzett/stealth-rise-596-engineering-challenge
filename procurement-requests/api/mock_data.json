@@ -15,7 +15,8 @@
         "total": 12
       }
     ],
-    "total": 12
+    "total": 12,
+    "status": "Open"
   },
   {
     "requestor": "Jane Smith",
@@ -40,7 +41,8 @@
         "total": 450
       }
     ],
-    "total": 1450
+    "total": 1450,
+    "status": "In Progress"
   },
   {
     "requestor": "Robert Johnson",
@@ -65,7 +67,8 @@
         "total": 2400
       }
     ],
-    "total": 7400
+    "total": 7400,
+    "status": "Closed"
   },
   {
     "requestor": "Emily Williams",
@@ -83,6 +86,7 @@
         "total": 2400
       }
     ],
-    "total": 2400
+    "total": 2400,
+    "status": "Open"
   }
 ]
