@@ -1,91 +1,44 @@
+import json
+import os
 from typing import List, Optional
 from uuid import UUID
 
 from api.models import Order, ProcurementRequest
 
+
+def load_mock_requests() -> List[ProcurementRequest]:
+    """Load mock procurement requests from JSON file."""
+    mock_data_path = os.path.join(os.path.dirname(__file__), "mock_data.json")
+
+    if not os.path.exists(mock_data_path):
+        return []
+
+    with open(mock_data_path, "r") as f:
+        data = json.load(f)
+
+    # Convert dictionaries to ProcurementRequest objects
+    requests = []
+    for item in data:
+        # Convert order dictionaries to Order objects
+        orders = [Order(**order_data) for order_data in item["orders"]]
+        # Create ProcurementRequest with orders
+        request = ProcurementRequest(
+            requestor=item["requestor"],
+            department=item["department"],
+            title=item["title"],
+            vendor=item["vendor"],
+            vat_id=item["vat_id"],
+            commodity_group=item["commodity_group"],
+            orders=orders,
+            total=item["total"],
+        )
+        requests.append(request)
+
+    return requests
+
+
 # In-memory storage for procurement requests
-_requests: List[ProcurementRequest] = [
-    ProcurementRequest(
-        requestor="John Doe",
-        department="Aftersales",
-        title="Office 365",
-        vendor="Microsoft",
-        vat_id="DE12345",
-        commodity_group="Software",
-        orders=[
-            Order(title="Office 365", unit_price=12, amount=1, unit="seats", total=12)
-        ],
-        total=12,
-    ),
-    ProcurementRequest(
-        requestor="Jane Smith",
-        department="Marketing",
-        title="Adobe Creative Cloud",
-        vendor="Adobe Systems",
-        vat_id="DE98765",
-        commodity_group="Software Licenses",
-        orders=[
-            Order(
-                title="Adobe Photoshop License",
-                unit_price=200,
-                amount=5,
-                unit="licenses",
-                total=1000,
-            ),
-            Order(
-                title="Adobe Illustrator License",
-                unit_price=150,
-                amount=3,
-                unit="licenses",
-                total=450,
-            ),
-        ],
-        total=1450,
-    ),
-    ProcurementRequest(
-        requestor="Robert Johnson",
-        department="IT",
-        title="Server Hardware",
-        vendor="Dell Technologies",
-        vat_id="DE54321",
-        commodity_group="Hardware",
-        orders=[
-            Order(
-                title="Dell PowerEdge Servers",
-                unit_price=2500,
-                amount=2,
-                unit="units",
-                total=5000,
-            ),
-            Order(
-                title="Network Switches",
-                unit_price=800,
-                amount=3,
-                unit="units",
-                total=2400,
-            ),
-        ],
-        total=7400,
-    ),
-    ProcurementRequest(
-        requestor="Emily Williams",
-        department="HR",
-        title="Recruitment Platform Subscription",
-        vendor="LinkedIn Corporation",
-        vat_id="DE11223",
-        commodity_group="Services",
-        orders=[
-            Order(
-                title="LinkedIn Recruiter Licenses",
-                unit_price=1200,
-                amount=2,
-                unit="licenses",
-                total=2400,
-            )
-        ],
-        total=2400,
-    ),
-]
+_requests: List[ProcurementRequest] = load_mock_requests()
 
 
 def get_requests() -> List[ProcurementRequest]:
