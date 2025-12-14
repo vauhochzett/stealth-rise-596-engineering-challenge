@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import os
-from typing import Any
+from typing import Any, Iterable
 
 from fastapi import HTTPException
 from openai import APIError, OpenAI
@@ -34,9 +34,9 @@ Rules:
 # Brief prompt to classify commodity groupings from structured request data.
 _CLASSIFICATION_PROMPT = """
 You act as a procurement analyst. Given request details, return ONLY JSON with a
-single field `commodity_group` describing the overall category (e.g., Software
-Licenses, IT Hardware, Consulting Services, Office Supplies, Marketing). Stay
-concise and pick the closest standard procurement category.
+single field `commodity_group` describing the overall category. Stay concise and
+pick the closest standard procurement category. Reuse known commodity groups
+when they fit.
 """.strip()
 
 if not os.getenv("OPENAI_API_KEY"):
@@ -147,8 +147,11 @@ async def extract_procurement_request(
     return await asyncio.to_thread(_extract_from_pdf, pdf_bytes, filename)
 
 
-def _build_classification_messages(request: ProcurementRequest) -> list[dict[str, Any]]:
+def _build_classification_messages(
+    request: ProcurementRequest, known_groups: Iterable[str] | None
+) -> list[dict[str, Any]]:
     """Create a compact, human-readable summary of the request for classification."""
+    known_groups = sorted({group for group in (known_groups or []) if group})
     lines = [
         f"Title: {request.title}",
         f"Department: {request.department}",
@@ -167,7 +170,17 @@ def _build_classification_messages(request: ProcurementRequest) -> list[dict[str
     lines.append(f"Total amount: {request.total}")
 
     return [
-        {"role": "system", "content": _CLASSIFICATION_PROMPT},
+        {
+            "role": "system",
+            "content": (
+                _CLASSIFICATION_PROMPT
+                + (
+                    "\nKnown commodity groups:\n- " + "\n- ".join(known_groups)
+                    if known_groups
+                    else ""
+                )
+            ),
+        },
         {"role": "user", "content": "\n".join(lines)},
     ]
 
@@ -189,18 +202,22 @@ def _parse_commodity_group(content: str) -> str:
     return commodity_group.strip()
 
 
-def _classify_commodity_group(request: ProcurementRequest) -> str:
+def _classify_commodity_group(
+    request: ProcurementRequest, known_groups: Iterable[str] | None
+) -> str:
     content = _chat_completion(
-        _build_classification_messages(request),
+        _build_classification_messages(request, known_groups),
         response_format={"type": "json_object"},
         detail="commodity classification",
     )
     return _parse_commodity_group(content)
 
 
-async def determine_commodity_group(request: ProcurementRequest) -> str:
+async def determine_commodity_group(
+    request: ProcurementRequest, known_groups: Iterable[str] | None = None
+) -> str:
     """
     Derive a commodity group from the request data using OpenAI, offloading to a
     thread to keep the FastAPI event loop responsive.
     """
-    return await asyncio.to_thread(_classify_commodity_group, request)
+    return await asyncio.to_thread(_classify_commodity_group, request, known_groups)
