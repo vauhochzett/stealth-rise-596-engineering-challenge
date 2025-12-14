@@ -1,7 +1,7 @@
 services:
   api:
     build:
-      context: ./procurement-requests
+      context: ./procurement-api
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       REQUESTS_FILE_PATH: /data/requests_data.json

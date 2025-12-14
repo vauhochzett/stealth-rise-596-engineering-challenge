@@ -1,7 +1,7 @@
 [project]
-name = "procurement-requests"
+name = "procurement-api"
 version = "0.1.0"
-description = "Add your description here"
+description = "Backend for the procurement requests app."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

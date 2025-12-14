@@ -11,7 +11,7 @@
 ### API
 
 - [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
-- Navigate to `procurement-requests`.
+- Navigate to `procurement-api`.
 - Run `uv run fastapi dev main.py` to start the API.
 
 ### Frontend
