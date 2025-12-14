@@ -77,6 +77,8 @@ const RequestFormPage = () => {
       }
       setForm((prev) => ({
         ...prev,
+        requestor: data.requestor ?? prev.requestor,
+        title: data.title ?? prev.title,
         vendor: data.vendor ?? prev.vendor,
         vat_id: data.vat_id ?? prev.vat_id,
         department: data.department ?? prev.department,
