@@ -1,9 +1,18 @@
 import json
+import logging
 import os
+from pathlib import Path
 from typing import List, Optional
 from uuid import UUID
 
 from api.models import Order, ProcurementRequest, RequestStatus
+
+DATA_FILE = Path(
+    os.environ.get(
+        "REQUESTS_FILE_PATH",
+        Path(__file__).resolve().parent / "requests_data.json",
+    )
+)
 
 
 def load_mock_requests() -> List[ProcurementRequest]:
@@ -38,8 +47,44 @@ def load_mock_requests() -> List[ProcurementRequest]:
     return requests
 
 
+def _load_requests_from_disk() -> Optional[List[ProcurementRequest]]:
+    if not DATA_FILE.exists():
+        return None
+
+    try:
+        with open(DATA_FILE, "r") as f:
+            data = json.load(f)
+        # Treat empty files as "no data" so we can seed from mocks
+        if not data:
+            return None
+        return [ProcurementRequest.model_validate(item) for item in data]
+    except Exception as exc:  # noqa: BLE001
+        logging.error("Failed to load persisted requests: %s", exc)
+        return None
+
+
+def _save_requests_to_disk(requests: List[ProcurementRequest]) -> None:
+    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(DATA_FILE, "w") as f:
+        json.dump([request.model_dump(mode="json") for request in requests], f, indent=2)
+
+
+def _initialize_requests() -> List[ProcurementRequest]:
+    """Load persisted data or fall back to mock data and seed disk."""
+    persisted = _load_requests_from_disk()
+    if persisted is not None:
+        return persisted
+
+    seeded = load_mock_requests()
+    try:
+        _save_requests_to_disk(seeded)
+    except Exception as exc:  # noqa: BLE001
+        logging.error("Failed to seed persisted requests: %s", exc)
+    return seeded
+
+
 # In-memory storage for procurement requests
-_requests: List[ProcurementRequest] = load_mock_requests()
+_requests: List[ProcurementRequest] = _initialize_requests()
 
 
 def get_requests() -> List[ProcurementRequest]:
@@ -59,6 +104,7 @@ def add_request(request: ProcurementRequest) -> bool:
     """Add a new procurement request."""
     try:
         _requests.append(request)
+        _save_requests_to_disk(_requests)
         return True
     except Exception:
         return False
@@ -70,6 +116,7 @@ def update_request_status(request_id: UUID, status: RequestStatus) -> bool:
         for request in _requests:
             if request.id == request_id:
                 request.status = status
+                _save_requests_to_disk(_requests)
                 return True
         return False
     except Exception:
