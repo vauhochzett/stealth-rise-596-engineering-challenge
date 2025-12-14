@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Order, RequestPayload } from '../api/client'
 import { api } from '../api/client'
