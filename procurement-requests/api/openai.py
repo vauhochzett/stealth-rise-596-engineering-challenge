@@ -30,11 +30,10 @@ Rules:
 - Respond with JSON only, no prose.
 """
 
+if not os.getenv("OPENAI_API_KEY"):
+    raise IOError("Please set OPENAI_API_KEY to start")
 
-def _get_client() -> OpenAI:
-    if not os.getenv("OPENAI_API_KEY"):
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not configured")
-    return OpenAI()
+client: OpenAI = OpenAI()
 
 
 def _upload_pdf(client: OpenAI, pdf_bytes: bytes, filename: str) -> str:
@@ -88,7 +87,6 @@ def _build_messages(file_id: str) -> list[dict[str, Any]]:
 
 
 def _extract_from_pdf(pdf_bytes: bytes, filename: str) -> ProcurementRequest:
-    client = _get_client()
     file_id = _upload_pdf(client, pdf_bytes, filename)
 
     try:
