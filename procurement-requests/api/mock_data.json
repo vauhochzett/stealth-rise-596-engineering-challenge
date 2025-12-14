@@ -88,5 +88,90 @@
     ],
     "total": 2400,
     "status": "Open"
+  },
+  {
+    "requestor": "Sarah Wilson",
+    "department": "Marketing",
+    "title": "Office Decorations for Holiday Season",
+    "vendor": "Office Supplies Co.",
+    "vat_id": "DE55667",
+    "commodity_group": "Office Decorations",
+    "orders": [
+      {
+        "title": "Holiday Desk Ornaments",
+        "unit_price": 15,
+        "amount": 10,
+        "unit": "pieces",
+        "total": 150
+      },
+      {
+        "title": "Festive Posters",
+        "unit_price": 8,
+        "amount": 20,
+        "unit": "pieces",
+        "total": 160
+      },
+      {
+        "title": "String Lights",
+        "unit_price": 25,
+        "amount": 5,
+        "unit": "sets",
+        "total": 125
+      },
+      {
+        "title": "Holiday Wreaths",
+        "unit_price": 30,
+        "amount": 4,
+        "unit": "pieces",
+        "total": 120
+      }
+    ],
+    "total": 555,
+    "status": "Open"
+  },
+  {
+    "requestor": "Michael Brown",
+    "department": "IT",
+    "title": "Computing Hardware Upgrade",
+    "vendor": "Lenovo",
+    "vat_id": "DE77889",
+    "commodity_group": "Computing Hardware",
+    "orders": [
+      {
+        "title": "ThinkPad X1 Carbon Laptop",
+        "unit_price": 1200,
+        "amount": 5,
+        "unit": "units",
+        "total": 6000
+      }
+    ],
+    "total": 6000,
+    "status": "In Progress"
+  },
+  {
+    "requestor": "Lisa Davis",
+    "department": "Operations",
+    "title": "Office Furniture",
+    "vendor": "Furniture Plus",
+    "vat_id": "DE33445",
+    "commodity_group": "Office Furniture",
+    "orders": [
+      {
+        "title": "Ergonomic Office Chairs",
+        "unit_price": 300,
+        "amount": 10,
+        "unit": "units",
+        "total": 3000
+      },
+      {
+        "title": "Adjustable Desks",
+        "unit_price": 450,
+        "amount": 5,
+        "unit": "units",
+        "total": 2250
+      }
+    ],
+    "total": 5250,
+    "status": "Open"
   }
 ]
