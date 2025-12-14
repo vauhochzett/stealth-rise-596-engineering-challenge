@@ -57,7 +57,7 @@ export const api = {
     const formData = new FormData()
     formData.append('file', file)
     const { data } = await http.post<ExtractedOffer>(
-      '/requests/extract',
+      '/extract',
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },
