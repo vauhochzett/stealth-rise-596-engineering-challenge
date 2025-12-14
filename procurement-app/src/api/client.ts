@@ -1,30 +1,29 @@
 import axios from 'axios'
 
-export type RequestStatus = 'OPEN' | 'IN_PROGRESS' | 'CLOSED'
+export type RequestStatus = 'Open' | 'In Progress' | 'Closed'
 
-export type OrderLine = {
-  description: string
-  unitPrice: number
+export type Order = {
+  title: string
+  unit_price: number
   amount: number
   unit: string
-  totalPrice: number
+  total: number
 }
 
 export type RequestPayload = {
-  requestorName: string
+  requestor: string
+  department: string
   title: string
-  vendorName: string
-  vatId: string
-  commodityGroup?: string
-  orderLines: OrderLine[]
-  totalCost: number
-  department?: string
+  vendor: string
+  vat_id: string
+  commodity_group: string
+  orders: Order[]
+  total: number
 }
 
 export type ProcurementRequest = RequestPayload & {
   id: string
   status: RequestStatus
-  createdAt?: string
 }
 
 export type ExtractedOffer = Partial<RequestPayload>
@@ -39,24 +38,23 @@ const http = axios.create({
 const mockRequests: ProcurementRequest[] = [
   {
     id: 'REQ-1001',
-    requestorName: 'John Doe',
+    requestor: 'John Doe',
+    department: 'HR',
     title: 'Adobe Creative Cloud Subscription',
-    vendorName: 'Adobe Systems',
-    vatId: 'DE123456789',
-    commodityGroup: 'Information Technology - Software',
-    orderLines: [
+    vendor: 'Adobe Systems',
+    vat_id: 'DE123456789',
+    commodity_group: 'Information Technology - Software',
+    orders: [
       {
-        description: 'Adobe Photoshop License',
-        unitPrice: 200,
+        title: 'Adobe Photoshop License',
+        unit_price: 200,
         amount: 5,
         unit: 'licenses',
-        totalPrice: 1000,
+        total: 1000,
       },
     ],
-    totalCost: 3000,
-    department: 'HR',
-    status: 'OPEN',
-    createdAt: new Date().toISOString(),
+    total: 3000,
+    status: 'Open',
   },
 ]
 
@@ -77,8 +75,7 @@ export const api = {
       const newRequest: ProcurementRequest = {
         ...payload,
         id: `REQ-${Math.floor(Math.random() * 9000) + 1000}`,
-        status: 'OPEN',
-        createdAt: new Date().toISOString(),
+        status: 'Open',
       }
       mockRequests.unshift(newRequest)
       return simulateLatency(newRequest)
@@ -104,27 +101,27 @@ export const api = {
   async extractFromOffer(file: File): Promise<ExtractedOffer> {
     if (useMock) {
       return simulateLatency({
-        vendorName: 'Global Tech Solutions',
-        vatId: 'DE987654321',
+        vendor: 'Global Tech Solutions',
+        vat_id: 'DE987654321',
         department: 'Creative Marketing Department',
-        commodityGroup: 'Information Technology - Software',
-        orderLines: [
+        commodity_group: 'Information Technology - Software',
+        orders: [
           {
-            description: 'Adobe Photoshop License',
-            unitPrice: 150,
+            title: 'Adobe Photoshop License',
+            unit_price: 150,
             amount: 10,
             unit: 'licenses',
-            totalPrice: 1500,
+            total: 1500,
           },
           {
-            description: 'Adobe Illustrator License',
-            unitPrice: 120,
+            title: 'Adobe Illustrator License',
+            unit_price: 120,
             amount: 5,
             unit: 'licenses',
-            totalPrice: 600,
+            total: 600,
           },
         ],
-        totalCost: 2100,
+        total: 2100,
       })
     }
     const formData = new FormData()

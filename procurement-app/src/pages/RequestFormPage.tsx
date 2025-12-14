@@ -1,30 +1,30 @@
 import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { OrderLine, RequestPayload } from '../api/client'
+import type { Order, RequestPayload } from '../api/client'
 import { api } from '../api/client'
 import Loading from '../components/Loading'
 import OrderLinesEditor from '../components/OrderLinesEditor'
 
-const emptyLine: OrderLine = {
-  description: '',
-  unitPrice: 0,
+const emptyLine: Order = {
+  title: '',
+  unit_price: 0,
   amount: 1,
   unit: '',
-  totalPrice: 0,
+  total: 0,
 }
 
 const RequestFormPage = () => {
   const navigate = useNavigate()
-  const [orderLines, setOrderLines] = useState<OrderLine[]>([{ ...emptyLine }])
+  const [orderLines, setOrderLines] = useState<Order[]>([{ ...emptyLine }])
   const [form, setForm] = useState<RequestPayload>({
-    requestorName: '',
-    title: '',
-    vendorName: '',
-    vatId: '',
-    commodityGroup: '',
-    orderLines: [],
-    totalCost: 0,
+    requestor: '',
     department: '',
+    title: '',
+    vendor: '',
+    vat_id: '',
+    commodity_group: '',
+    orders: [],
+    total: 0,
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isExtracting, setIsExtracting] = useState(false)
@@ -33,7 +33,7 @@ const RequestFormPage = () => {
 
   const totalFromLines = useMemo(
     () =>
-      orderLines.reduce((sum, line) => sum + (Number(line.totalPrice) || 0), 0),
+      orderLines.reduce((sum, line) => sum + (Number(line.total) || 0), 0),
     [orderLines],
   )
 
@@ -52,8 +52,8 @@ const RequestFormPage = () => {
     try {
       const payload: RequestPayload = {
         ...form,
-        orderLines,
-        totalCost: form.totalCost || totalFromLines,
+        orders: orderLines,
+        total: form.total || totalFromLines,
       }
       const created = await api.createRequest(payload)
       setSuccess(`Request ${created.id} created`)
@@ -72,16 +72,16 @@ const RequestFormPage = () => {
     setSuccess(null)
     try {
       const data = await api.extractFromOffer(file)
-      if (data.orderLines?.length) {
-        setOrderLines(data.orderLines)
+      if (data.orders?.length) {
+        setOrderLines(data.orders)
       }
       setForm((prev) => ({
         ...prev,
-        vendorName: data.vendorName ?? prev.vendorName,
-        vatId: data.vatId ?? prev.vatId,
+        vendor: data.vendor ?? prev.vendor,
+        vat_id: data.vat_id ?? prev.vat_id,
         department: data.department ?? prev.department,
-        commodityGroup: data.commodityGroup ?? prev.commodityGroup,
-        totalCost: data.totalCost ?? prev.totalCost,
+        commodity_group: data.commodity_group ?? prev.commodity_group,
+        total: data.total ?? prev.total,
       }))
       setSuccess('Offer extracted. Review the details below.')
     } catch (err) {
@@ -131,8 +131,8 @@ const RequestFormPage = () => {
               <label className="form-label">Requestor Name</label>
               <input
                 className="form-control"
-                value={form.requestorName}
-                onChange={(e) => updateField('requestorName', e.target.value)}
+                value={form.requestor}
+                onChange={(e) => updateField('requestor', e.target.value)}
                 placeholder="John Doe"
                 required
               />
@@ -141,7 +141,7 @@ const RequestFormPage = () => {
               <label className="form-label">Department</label>
               <input
                 className="form-control"
-                value={form.department ?? ''}
+                value={form.department}
                 onChange={(e) => updateField('department', e.target.value)}
                 placeholder="HR"
                 required
@@ -166,8 +166,8 @@ const RequestFormPage = () => {
               <label className="form-label">Vendor Name</label>
               <input
                 className="form-control"
-                value={form.vendorName}
-                onChange={(e) => updateField('vendorName', e.target.value)}
+                value={form.vendor}
+                onChange={(e) => updateField('vendor', e.target.value)}
                 placeholder="Global Tech Solutions"
                 required
               />
@@ -176,8 +176,8 @@ const RequestFormPage = () => {
               <label className="form-label">VAT ID</label>
               <input
                 className="form-control"
-                value={form.vatId}
-                onChange={(e) => updateField('vatId', e.target.value)}
+                value={form.vat_id}
+                onChange={(e) => updateField('vat_id', e.target.value)}
                 placeholder="DE123456789"
                 required
               />
@@ -186,10 +186,8 @@ const RequestFormPage = () => {
               <label className="form-label">Commodity Group</label>
               <input
                 className="form-control"
-                value={form.commodityGroup ?? ''}
-                onChange={(e) =>
-                  updateField('commodityGroup', e.target.value || undefined)
-                }
+                value={form.commodity_group}
+                onChange={(e) => updateField('commodity_group', e.target.value)}
                 placeholder="Auto-selected by backend"
               />
               <div className="form-text">
@@ -203,10 +201,8 @@ const RequestFormPage = () => {
                 min="0"
                 step="0.01"
                 className="form-control"
-                value={form.totalCost || totalFromLines || ''}
-                onChange={(e) =>
-                  updateField('totalCost', Number(e.target.value) || 0)
-                }
+                value={form.total || totalFromLines || ''}
+                onChange={(e) => updateField('total', Number(e.target.value) || 0)}
                 placeholder="Calculated from order lines"
               />
               <div className="form-text">

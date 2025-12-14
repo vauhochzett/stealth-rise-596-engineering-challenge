@@ -5,7 +5,7 @@ import { api } from '../api/client'
 import Loading from '../components/Loading'
 import StatusBadge from '../components/StatusBadge'
 
-const statusOptions: RequestStatus[] = ['OPEN', 'IN_PROGRESS', 'CLOSED']
+const statusOptions: RequestStatus[] = ['Open', 'In Progress', 'Closed']
 
 const RequestListPage = () => {
   const [requests, setRequests] = useState<ProcurementRequest[]>([])
@@ -87,20 +87,20 @@ const RequestListPage = () => {
                     <td className="text-nowrap fw-semibold">{req.id}</td>
                     <td>{req.title}</td>
                     <td>
-                      <div className="fw-semibold">{req.vendorName}</div>
-                      <div className="text-muted small">{req.vatId}</div>
+                      <div className="fw-semibold">{req.vendor}</div>
+                      <div className="text-muted small">{req.vat_id}</div>
                     </td>
                     <td className="text-nowrap">{req.department}</td>
                     <td>
-                      <StatusBadge status={req.status} />
+                      {req.status && <StatusBadge status={req.status} />}
                     </td>
                     <td className="text-nowrap">
-                      € {Number(req.totalCost || 0).toFixed(2)}
+                      € {Number(req.total || 0).toFixed(2)}
                     </td>
                     <td className="text-end">
                       <select
                         className="form-select form-select-sm w-auto d-inline-block"
-                        value={req.status}
+                        value={req.status ?? 'Open'}
                         disabled={updatingId === req.id}
                         onChange={(e) =>
                           changeStatus(req.id, e.target.value as RequestStatus)

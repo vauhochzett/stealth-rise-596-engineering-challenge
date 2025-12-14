@@ -1,9 +1,9 @@
 import type { RequestStatus } from '../api/client'
 
 const statusClass: Record<RequestStatus, string> = {
-  OPEN: 'warning',
-  IN_PROGRESS: 'info',
-  CLOSED: 'success',
+  Open: 'warning',
+  'In Progress': 'info',
+  Closed: 'success',
 }
 
 type Props = {
@@ -11,8 +11,9 @@ type Props = {
 }
 
 const StatusBadge = ({ status }: Props) => {
+  const variant = statusClass[status] ?? 'secondary'
   return (
-    <span className={`badge text-bg-${statusClass[status]}`}>{status}</span>
+    <span className={`badge text-bg-${variant}`}>{status}</span>
   )
 }
 

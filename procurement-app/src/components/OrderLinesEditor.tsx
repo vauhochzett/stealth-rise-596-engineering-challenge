@@ -1,31 +1,31 @@
-import type { OrderLine } from '../api/client'
+import type { Order } from '../api/client'
 
 type Props = {
-  lines: OrderLine[]
-  onChange: (lines: OrderLine[]) => void
+  lines: Order[]
+  onChange: (lines: Order[]) => void
 }
 
-const blankLine: OrderLine = {
-  description: '',
-  unitPrice: 0,
+const blankLine: Order = {
+  title: '',
+  unit_price: 0,
   amount: 1,
   unit: '',
-  totalPrice: 0,
+  total: 0,
 }
 
 const OrderLinesEditor = ({ lines, onChange }: Props) => {
-  const updateLine = <K extends keyof OrderLine>(
+  const updateLine = <K extends keyof Order>(
     index: number,
     key: K,
-    value: OrderLine[K],
+    value: Order[K],
   ) => {
     const next = [...lines]
-    const numericKeys: Array<keyof OrderLine> = ['unitPrice', 'amount']
+    const numericKeys: Array<keyof Order> = ['unit_price', 'amount']
     const line = { ...next[index], [key]: value }
     if (numericKeys.includes(key)) {
-      const unitPrice = Number(line.unitPrice) || 0
+      const unitPrice = Number(line.unit_price) || 0
       const amount = Number(line.amount) || 0
-      line.totalPrice = Number.isFinite(unitPrice * amount)
+      line.total = Number.isFinite(unitPrice * amount)
         ? Math.round(unitPrice * amount * 100) / 100
         : 0
     }
@@ -74,9 +74,9 @@ const OrderLinesEditor = ({ lines, onChange }: Props) => {
                   <td>
                     <input
                       className="form-control"
-                      value={line.description}
+                      value={line.title}
                       onChange={(e) =>
-                        updateLine(idx, 'description', e.target.value)
+                        updateLine(idx, 'title', e.target.value)
                       }
                       placeholder="Product or service"
                     />
@@ -89,9 +89,9 @@ const OrderLinesEditor = ({ lines, onChange }: Props) => {
                         min="0"
                         step="0.01"
                         className="form-control"
-                        value={line.unitPrice ?? ''}
+                        value={line.unit_price ?? ''}
                         onChange={(e) =>
-                          updateLine(idx, 'unitPrice', Number(e.target.value))
+                          updateLine(idx, 'unit_price', Number(e.target.value))
                         }
                       />
                     </div>
@@ -124,14 +124,8 @@ const OrderLinesEditor = ({ lines, onChange }: Props) => {
                         type="number"
                         min="0"
                         step="0.01"
-                        value={line.totalPrice ?? 0}
-                        onChange={(e) =>
-                          updateLine(
-                            idx,
-                            'totalPrice',
-                            Number(e.target.value),
-                          )
-                        }
+                        value={line.total ?? 0}
+                        onChange={(e) => updateLine(idx, 'total', Number(e.target.value))}
                       />
                     </div>
                   </td>
