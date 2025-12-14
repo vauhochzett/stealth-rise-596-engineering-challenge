@@ -1,10 +1,11 @@
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 from fastapi.templating import Jinja2Templates
 
 import api.data
 from api.models import ProcurementRequest, StatusUpdate
+from api.openai import extract_procurement_request
 
 templates = Jinja2Templates(directory="html")
 router = APIRouter()
@@ -47,3 +48,15 @@ async def update_request_status(request_id: UUID, update: StatusUpdate):
         )
 
     return {"message": f"Request status updated to {update.status}"}
+
+
+@router.post("/extract")
+async def extract(file: UploadFile = File(...)):
+    if file.content_type not in ("application/pdf", "application/octet-stream"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+
+    pdf_bytes = await file.read()
+    request = await extract_procurement_request(
+        pdf_bytes, file.filename or "request.pdf"
+    )
+    return request
