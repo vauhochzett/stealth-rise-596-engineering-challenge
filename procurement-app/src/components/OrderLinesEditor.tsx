@@ -120,21 +120,25 @@ const OrderLinesEditor = ({ lines, onChange }: Props) => {
                     <div className="input-group">
                       <span className="input-group-text">€</span>
                       <input
-                        className="form-control"
+                        className="form-control bg-light-subtle text-muted"
                         type="number"
                         min="0"
                         step="0.01"
                         value={line.total ?? 0}
-                        onChange={(e) => updateLine(idx, 'total', Number(e.target.value))}
+                        readOnly
+                        disabled
                       />
                     </div>
                   </td>
                   <td className="text-end">
                     <button
                       type="button"
-                      className="btn btn-link text-danger"
+                      className={`btn btn-link ${
+                        lines.length > 1 ? 'text-danger' : 'text-muted'
+                      }`}
                       onClick={() => removeLine(idx)}
                       aria-label="Remove line"
+                      disabled={lines.length === 1}
                     >
                       <i className="bi bi-trash" />
                     </button>
@@ -150,4 +154,3 @@ const OrderLinesEditor = ({ lines, onChange }: Props) => {
 }
 
 export default OrderLinesEditor
-

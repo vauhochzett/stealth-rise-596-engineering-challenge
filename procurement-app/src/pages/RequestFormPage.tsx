@@ -53,7 +53,7 @@ const RequestFormPage = () => {
       const payload: RequestPayload = {
         ...form,
         orders: orderLines,
-        total: form.total || totalFromLines,
+        total: totalFromLines,
       }
       const created = await api.createRequest(payload)
       setSuccess(`Request ${created.id} created`)
@@ -81,7 +81,6 @@ const RequestFormPage = () => {
         vat_id: data.vat_id ?? prev.vat_id,
         department: data.department ?? prev.department,
         commodity_group: data.commodity_group ?? prev.commodity_group,
-        total: data.total ?? prev.total,
       }))
       setSuccess('Offer extracted. Review the details below.')
     } catch (err) {
@@ -185,13 +184,14 @@ const RequestFormPage = () => {
             <div className="col-md-6">
               <label className="form-label">Commodity Group</label>
               <input
-                className="form-control"
+                className="form-control bg-light-subtle text-muted"
                 value={form.commodity_group}
-                onChange={(e) => updateField('commodity_group', e.target.value)}
+                readOnly
+                disabled
                 placeholder="Auto-selected by backend"
               />
               <div className="form-text">
-                Leave blank to let procurement auto-classify the request.
+                Auto-classified by procurement. Will update after extraction or backend processing.
               </div>
             </div>
             <div className="col-md-6">
@@ -200,14 +200,14 @@ const RequestFormPage = () => {
                 type="number"
                 min="0"
                 step="0.01"
-                className="form-control"
-                value={form.total || totalFromLines || ''}
-                onChange={(e) => updateField('total', Number(e.target.value) || 0)}
+                className="form-control bg-light-subtle text-muted"
+                value={totalFromLines}
+                readOnly
+                disabled
                 placeholder="Calculated from order lines"
               />
               <div className="form-text">
-                If empty, we will use the sum of the order lines ({' '}
-                {totalFromLines.toFixed(2)} €).
+                Calculated from order lines ({totalFromLines.toFixed(2)} €).
               </div>
             </div>
           </div>
