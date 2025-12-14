@@ -77,13 +77,13 @@ def _build_messages(file_id: str) -> list[dict[str, Any]]:
             "role": "user",
             "content": [
                 {
-                    "type": "input_text",
+                    "type": "text",
                     "text": (
                         "Extract the procurement request as JSON following the schema. "
                         "Use the attached PDF only."
                     ),
                 },
-                {"type": "input_file", "input_file_id": file_id},
+                {"type": "file", "file": {"file_id": file_id}},
             ],
         },
     ]
